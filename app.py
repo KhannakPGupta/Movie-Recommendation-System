@@ -45,6 +45,13 @@ st.markdown(
 .small-muted { color:#6b7280; font-size: 0.92rem; }
 .movie-title { font-size: 0.9rem; line-height: 1.15rem; height: 2.3rem; overflow: hidden; }
 .card { border: 1px solid rgba(0,0,0,0.08); border-radius: 16px; padding: 14px; background: rgba(255,255,255,0.7); }
+.desc-box { 
+    background: rgba(255, 255, 255, 0.05); 
+    border: 1px solid rgba(128, 128, 128, 0.2); 
+    border-radius: 12px; 
+    padding: 16px; 
+    margin-bottom: 20px; 
+}
 </style>
 """,
     unsafe_allow_html=True,
@@ -289,7 +296,19 @@ with st.sidebar:
 # =============================
 st.title("🎬 Movie Recommender")
 st.markdown(
-    "<div class='small-muted'>Type keyword → dropdown suggestions + matching results → open → details + recommendations</div>",
+    """
+    <div class='desc-box'>
+        <p style='margin: 0; font-size: 1.05rem; line-height: 1.6;'>
+            Welcome to the <strong>Hybrid Movie Recommendation System</strong>! 🎬
+            This platform generates high-quality movie recommendations by combining 
+            <strong>local content-based filtering (TF-IDF & Cosine Similarity)</strong> computed on a dataset of 45,000+ movies 
+            with <strong>real-time genre-based discovery and live metadata</strong> retrieved directly from the TMDB Cloud API.
+        </p>
+        <p style='margin: 8px 0 0 0; font-size: 0.90rem; opacity: 0.8;'>
+            💡 <strong>How to explore:</strong> Type any keyword below (e.g., <i>"avenger"</i>, <i>"batman"</i>, <i>"love"</i>) to view instant search suggestions and matching results. Click <strong>"Open"</strong> on any movie card to load detailed descriptions, ratings, and parallel-processed recommendation lists!
+        </p>
+    </div>
+    """,
     unsafe_allow_html=True,
 )
 st.divider()
