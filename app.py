@@ -1,11 +1,37 @@
 import requests
 import streamlit as st
+import asyncio
+import os
 
 # =============================
 # CONFIG
 # =============================
-API_BASE = "http://127.0.0.1:8000"
+# Streamlit Cloud deployment can read BACKEND_URL if set; defaults to localhost
+API_BASE = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
 TMDB_IMG = "https://image.tmdb.org/t/p/w500"
+
+# Direct backend integration:
+# Check if main.py exists locally. If so, we load resources once at startup
+# and call the python functions directly rather than sending requests to a local API.
+HAS_BACKEND = False
+backend = None
+try:
+    import main as backend
+    backend.load_pickles()
+    HAS_BACKEND = True
+except Exception as e:
+    # Fallback to pure API-only mode if main.py is missing or fails to import
+    pass
+
+# Utility to serialize Pydantic models to dictionaries (for parity with API responses)
+def serialize_pydantic(obj):
+    if hasattr(obj, "model_dump"):
+        return obj.model_dump()
+    elif hasattr(obj, "dict"):
+        return obj.dict()
+    elif isinstance(obj, list):
+        return [serialize_pydantic(item) for item in obj]
+    return obj
 
 st.set_page_config(page_title="Movie Recommender", page_icon="🎬", layout="wide")
 
@@ -65,6 +91,49 @@ def goto_details(tmdb_id: int):
 # =============================
 @st.cache_data(ttl=30)  # short cache for autocomplete
 def api_get_json(path: str, params: dict | None = None):
+    # Determine if we should bypass HTTP and run locally in-process.
+    # We do this if main.py is imported and API_BASE points to localhost.
+    use_local = HAS_BACKEND and ("127.0.0.1" in API_BASE or "localhost" in API_BASE)
+
+    if use_local:
+        local_params = params or {}
+        try:
+            if path == "/tmdb/search":
+                query = local_params.get("query", "")
+                page = int(local_params.get("page", 1))
+                res = asyncio.run(backend.tmdb_search_movies(query=query, page=page))
+                return res, None
+
+            elif path == "/home":
+                category = local_params.get("category", "popular")
+                limit = int(local_params.get("limit", 24))
+                res = asyncio.run(backend.home(category=category, limit=limit))
+                return serialize_pydantic(res), None
+
+            elif path.startswith("/movie/id/"):
+                tmdb_id = int(path.split("/")[-1])
+                res = asyncio.run(backend.tmdb_movie_details(tmdb_id))
+                return serialize_pydantic(res), None
+
+            elif path == "/movie/search":
+                query = local_params.get("query", "")
+                tfidf_top_n = int(local_params.get("tfidf_top_n", 12))
+                genre_limit = int(local_params.get("genre_limit", 12))
+                res = asyncio.run(backend.search_bundle(query=query, tfidf_top_n=tfidf_top_n, genre_limit=genre_limit))
+                return serialize_pydantic(res), None
+
+            elif path == "/recommend/genre":
+                tmdb_id = int(local_params.get("tmdb_id"))
+                limit = int(local_params.get("limit", 18))
+                res = asyncio.run(backend.recommend_genre(tmdb_id=tmdb_id, limit=limit))
+                return serialize_pydantic(res), None
+
+            else:
+                return None, f"Local path {path} not implemented"
+        except Exception as e:
+            return None, f"Local execution failed: {e}"
+
+    # Standard HTTP execution (fallback)
     try:
         r = requests.get(f"{API_BASE}{path}", params=params, timeout=25)
         if r.status_code >= 400:

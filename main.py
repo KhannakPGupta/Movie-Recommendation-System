@@ -18,12 +18,16 @@ from dotenv import load_dotenv
 load_dotenv()
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 
+# Fallback to Streamlit secrets if not found in environment (useful for Streamlit Cloud)
+if not TMDB_API_KEY:
+    try:
+        import streamlit as st
+        TMDB_API_KEY = st.secrets.get("TMDB_API_KEY")
+    except Exception:
+        pass
+
 TMDB_BASE = "https://api.themoviedb.org/3"
 TMDB_IMG_500 = "https://image.tmdb.org/t/p/w500"
-
-if not TMDB_API_KEY:
-    # Don't crash import-time in production if you prefer; but for you better fail early:
-    raise RuntimeError("TMDB_API_KEY missing. Put it in .env as TMDB_API_KEY=xxxx")
 
 
 # =========================
@@ -106,6 +110,11 @@ def make_img_url(path: Optional[str]) -> Optional[str]:
 
 
 def tmdb_get_sync(path: str, params: Dict[str, Any]) -> Dict[str, Any]:
+    if not TMDB_API_KEY:
+        raise HTTPException(
+            status_code=500,
+            detail="TMDB_API_KEY is not set. Please set it in your environment variables or Streamlit secrets."
+        )
     import time
     q = dict(params)
     q["api_key"] = TMDB_API_KEY
