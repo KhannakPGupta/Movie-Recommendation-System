@@ -1,19 +1,21 @@
 # 🎬 Movie Recommendation System
 
+![Movie Recommender Banner](banner.png)
+
 A modern, high-performance, and resilient **hybrid movie recommendation web application** featuring a **FastAPI** backend and an interactive **Streamlit** frontend interface.
 
 The system provides dual-mode recommendations: **content-based filtering (TF-IDF)** on a local dataset of 45,000+ movies, and **live genre-based discovery** via the TMDB API.
 
 ---
 
-## 🚀 Key Features
+## ✨ Key Features
 
 * **⚡ Hybrid Recommendation Engine**:
   * **TF-IDF & Cosine Similarity**: Recommends similar movies using natural language features (overview, genres, taglines, keywords) computed on a local 45k Kaggle dataset.
   * **Dynamic Genre Discovery**: Live suggestions using real-time TMDB API lookups based on genre classification.
 * **🛡️ ISP & Connection Resilience (Self-Healing)**:
   * Employs a custom thread-pooled synchronous requests transport layer with **10-attempt exponential backoff retries** to bypass regional ISP Deep Packet Inspection (DPI) blocks and Windows Proactor DNS resolution bottlenecks.
-* **✨ Modern UI/UX**:
+* **💅 Modern UI/UX**:
   * Responsive, glassmorphic card grids, clean movie detail views, and real-time search suggestions built with Streamlit.
 * **🚀 Concurrent API Processing**:
   * Backend uses `asyncio.gather` to retrieve recommendation metadata and posters in parallel, reducing page load times from ~10s to <1s.
@@ -22,12 +24,14 @@ The system provides dual-mode recommendations: **content-based filtering (TF-IDF
 
 ## 🛠️ Technology Stack
 
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
-![Scikit-Learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
-![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
-![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)
+<p align="left">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit" />
+  <img src="https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="Scikit-Learn" />
+  <img src="https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white" alt="Pandas" />
+  <img src="https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white" alt="NumPy" />
+</p>
 
 ---
 
@@ -54,23 +58,23 @@ graph TD
 
 ## 🔧 Installation & Setup
 
-### Prerequisites
+### 📋 Prerequisites
 * Python 3.10+ (Tested on Python 3.13)
 * A TMDB API Key (Get one free from [TheMovieDB](https://www.themoviedb.org/documentation/api))
 
-### 1. Clone the Repository
+### 1️⃣ Clone the Repository
 ```bash
 git clone https://github.com/KhannakPGupta/Movie-Recommendation-System.git
 cd Movie-Recommendation-System
 ```
 
-### 2. Environment Configuration
+### 2️⃣ Environment Configuration
 Create a `.env` file in the root folder of the project:
 ```env
 TMDB_API_KEY=your_tmdb_api_key_here
 ```
 
-### 3. Install Dependencies
+### 3️⃣ Install Dependencies
 Set up a virtual environment and install the required packages:
 ```bash
 python -m venv .venv
@@ -82,7 +86,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Running the Application
+### 4️⃣ Running the Application
 
 Start the **FastAPI backend** server first:
 ```bash
@@ -107,9 +111,5 @@ The content-based recommender uses the classic **Kaggle Movies Metadata Dataset*
   * `tfidf_matrix.pkl`: Pre-computed sparse matrix representation of movie text vectors.
   * `indices.pkl`: Mapping series between movie titles and matrix row indices.
 
-*Note: For movies released after 2017 (e.g., The Batman (2022)), the application dynamically displays genre recommendations from the TMDB Cloud API.*
-
----
-
-## 📄 License
-Distributed under the MIT License. See `LICENSE` for more information.
+> [!NOTE]
+> For movies released after 2017 (e.g., *The Batman (2022)*), the application dynamically displays genre recommendations from the TMDB Cloud API.
