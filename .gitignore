@@ -1,0 +1,28 @@
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# Environment variables (API Keys)
+.env
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Large data/model files (optional but highly recommended to ignore to avoid bloating Git)
+# df.pkl
+# tfidf_matrix.pkl
+# tfidf.pkl
+# indices.pkl
+# movies_metadata.csv
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE / Editor configuration folders
+.vscode/
+.idea/
